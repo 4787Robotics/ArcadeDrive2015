@@ -63,26 +63,26 @@ public class Robot extends SampleRobot {
         	signX = (int)Math.signum(x);
         	
         	//Emmet's WORKING Code! - Functional and smooth, but unintuitive
-        	if(Math.abs(y) > DEADZONE)
+        	/*if(Math.abs(y) > DEADZONE)
         	{
-        		fLeft.set(-0.5*Math.signum(y)*(Math.abs(y))*(1.5+1*x));
-        		bLeft.set(-0.5*Math.signum(y)*(Math.abs(y))*(1.5+1*x));
-        		fRight.set(0.5*Math.signum(y)*(Math.abs(y))*(1.5-1*x));
-        		bRight.set(0.5*Math.signum(y)*(Math.abs(y))*(1.5-1*x));
+        		fLeft.set(-0.5*Math.signum(y)*Math.abs(y)*(1.5+(signY*x)));
+        		bLeft.set(-0.5*Math.signum(y)*Math.abs(y)*(1.5+(signY*x)));
+        		fRight.set(0.5*Math.signum(y)*Math.abs(y)*(1.5-(signY*x)));
+        		bRight.set(0.5*Math.signum(y)*Math.abs(y)*(1.5-(signY*x)));
         	} else {
         		fLeft.set(x * 0.5);
         		bLeft.set(x * 0.5);
         		fRight.set(x * 0.5);
         		bRight.set(x * 0.5);
-        	}
+        	}*/
         	
         	// Milos section - works and is intuitive
-        	/*  
+        	 
         	fLeft.set(stick.getX() - stick.getY());
         	bLeft.set(stick.getX() - stick.getY());
         	fRight.set(stick.getX() + stick.getY());
         	bRight.set(stick.getX() + stick.getY());
-        	*/
+        	
         	
             Timer.delay(0.005);		// wait for a motor update time
         }
@@ -92,6 +92,8 @@ public class Robot extends SampleRobot {
      * Runs during test mode
      */
     public void test() {
+    	//rawr
+    	System.out.println("test function");
     }
     
     public void disabled()
