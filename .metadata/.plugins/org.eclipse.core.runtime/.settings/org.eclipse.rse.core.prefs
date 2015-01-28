@@ -1,3 +1,4 @@
 activeuserprofiles=FTC-PC;Team
 eclipse.preferences.version=1
 org.eclipse.rse.systemtype.local.systemType.defaultUserId=Robotics
+useridperkey=FTC-PC.Local\=Robotics;

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Jaguar;
+import java.util.Random;
 
 /**
  * This is a demo program showing the use of the RobotDrive class.
@@ -25,15 +26,18 @@ import edu.wpi.first.wpilibj.Jaguar;
  * this system. Use IterativeRobot or Command-Based instead if you're new.
  */
 public class Robot extends SampleRobot {
-	
+	final double DEADZONEX = 0.05, DEADZONEY = 0.01;
+    final boolean EMMET_DRIVE = false;
+    
     Joystick stick;
 
     Jaguar fLeft = new Jaguar(4);
     Jaguar bLeft = new Jaguar(5);
     Jaguar fRight= new Jaguar(7);
     Jaguar bRight = new Jaguar(8);
-    final double DEADZONE = 0.15;
+    
     double y, x;
+    double expY, expX;
     int signY, signX;
   
     
@@ -45,10 +49,20 @@ public class Robot extends SampleRobot {
     
 
     /**
-     * Drive left & right motors for 2 seconds then stop
+     * Move autonmously....
      */
     public void autonomous() {
-
+    	Random rand = new Random();
+    	double randLeft = rand.nextDouble() * 0.1 - rand.nextDouble() * 0.1;
+    	double randRight = rand.nextDouble() * 0.1 - rand.nextDouble() * 0.1;
+    	
+    	fLeft.set(randLeft);
+		bLeft.set(randLeft);
+		fRight.set(randRight);
+		bRight.set(randRight);
+		
+		 Timer.delay(0.05);		// wait for a motor update time
+    	}
     }
 
     /**
@@ -61,32 +75,56 @@ public class Robot extends SampleRobot {
         	x = stick.getX();
         	signY = (int)Math.signum(y);
         	signX = (int)Math.signum(x);
-        	
-        	//Emmet's WORKING Code! - Functional and smooth, but unintuitive
-        	/*if(Math.abs(y) > DEADZONE)
+
+        	if(EMMET_DRIVE) 
         	{
-        		fLeft.set(-0.5*Math.signum(y)*Math.abs(y)*(1.5+(signY*x)));
-        		bLeft.set(-0.5*Math.signum(y)*Math.abs(y)*(1.5+(signY*x)));
-        		fRight.set(0.5*Math.signum(y)*Math.abs(y)*(1.5-(signY*x)));
-        		bRight.set(0.5*Math.signum(y)*Math.abs(y)*(1.5-(signY*x)));
-        	} else {
-        		fLeft.set(x * 0.5);
-        		bLeft.set(x * 0.5);
-        		fRight.set(x * 0.5);
-        		bRight.set(x * 0.5);
-        	}*/
-        	
-        	// Milos section - works and is intuitive
-        	 
-        	fLeft.set(stick.getX() - stick.getY());
-        	bLeft.set(stick.getX() - stick.getY());
-        	fRight.set(stick.getX() + stick.getY());
-        	bRight.set(stick.getX() + stick.getY());
-        	
-        	
-            Timer.delay(0.005);		// wait for a motor update time
+        		emmetDrive();
+        	}
+        	else 
+        	{
+        		milosDrive();
+        	}
         }
     }
+
+
+	public void milosDrive() { // Milos section - works and is intuitive
+		// Determines if joystick is out of deadzone
+		if(x>DEADZONEX || x<-DEADZONEX){
+			expX = Math.pow(x, 3); // x^3 for nonlinear control
+		}
+		if(y>DEADZONEY || y<-DEADZONEY){
+			expY = Math.pow(y, 3); // y^3 for nonlinear control
+		}
+	    // Motor power settings
+		fLeft.set(expX - expY);
+		bLeft.set(expX - expY);
+		fRight.set(expX + expY);
+		bRight.set(expX + expY);
+		
+		
+	    Timer.delay(0.005);		// wait for a motor update time
+	    System.out.println("X: " + expX + "  Y: " + expY);
+	}
+	
+	public void emmetDrive() {
+		//Emmet's WORKING Code! - Functional and smooth, but unintuitive
+		
+		if(Math.abs(y) > (0.15))
+		{
+			fLeft.set(-0.5*Math.signum(y)*Math.abs(y)*(1.5+(-1*x*signY)));
+			bLeft.set(-0.5*Math.signum(y)*Math.abs(y)*(1.5+(-1*x*signY)));
+			fRight.set(0.5*Math.signum(y)*Math.abs(y)*(1.5-(-1*x*signY)));
+			bRight.set(0.5*Math.signum(y)*Math.abs(y)*(1.5-(-1*x*signY)));
+		} else {
+			fLeft.set(x * 0.5);
+			bLeft.set(x * 0.5);
+			fRight.set(x * 0.5);
+			bRight.set(x * 0.5);
+		} 
+		//System.out.println("X: " + expX + "  Y: " + expY);
+		Timer.delay(0.005);		// wait for a motor update time
+	}
 
     /**
      * Runs during test mode
@@ -104,4 +142,13 @@ public class Robot extends SampleRobot {
     	bRight.set(0);
     	System.out.println("I prefer differently abled you ableist");
     }
+    
+    /*
+     * fLeft.set(stick.getX() - (stick.getY() * 0.5));
+		bLeft.set(stick.getX() - (stick.getY() * 0.5));
+		fRight.set(stick.getX() + (stick.getY() * 0.5));
+		bRight.set(stick.getX() + (stick.getY() * 0.5));
+     */
+    
+  
 }
