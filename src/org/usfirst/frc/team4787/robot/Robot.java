@@ -49,7 +49,7 @@ public class Robot extends SampleRobot {
     
 
     /**
-     * Move autonmously....
+     * Move autonomously....
      */
     public void autonomous() {
     	Random rand = new Random();
@@ -62,7 +62,6 @@ public class Robot extends SampleRobot {
 		bRight.set(randRight);
 		
 		 Timer.delay(0.05);		// wait for a motor update time
-    	}
     }
 
     /**
